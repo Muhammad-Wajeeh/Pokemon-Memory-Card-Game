@@ -1,0 +1,40 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 🚫 disables scroll */
+  }  
+
+
+#root{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.pokemon {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 16px;
+    margin: 20px auto;
+    border: 2px solid antiquewhite;
+    width: auto;
+    height: 100%;
+  }
+
+img{
+    margin-right: 12px;
+    margin-left: 12px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+  
+.pokeButtons{
+    background-color: transparent;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
