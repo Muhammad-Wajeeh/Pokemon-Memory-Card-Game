@@ -2,28 +2,36 @@ import { useEffect, useState } from "react";
 import "./pokemon.css";
 import { Pokemon } from "./pokemonClass";
 
-function FetchPokemon({ pokemonList, setPokemonList, score, setScore }) {
-  useEffect(() => {
-    async function fetchPokeList() {
-      try {
-        const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
-        const data = await res.json();
+function FetchPokemon({
+  pokemonList,
+  setPokemonList,
+  score,
+  setScore,
+  highscore,
+  setHighscore,
+}) {
+  async function fetchPokeList() {
+    try {
+      const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
+      const data = await res.json();
 
-        const detailedData = await Promise.all(
-          data.results.map(async (pokemon) => {
-            const res = await fetch(pokemon.url);
-            return await res.json();
-          })
-        );
+      const detailedData = await Promise.all(
+        data.results.map(async (pokemon) => {
+          const res = await fetch(pokemon.url);
+          return await res.json();
+        })
+      );
 
-        const newList = detailedData.map(
-          (poke) => new Pokemon(poke.name, poke.sprites.front_default, false)
-        );
-        setPokemonList(newList); // just once
-      } catch (err) {
-        console.error(err);
-      }
+      const newList = detailedData.map(
+        (poke) => new Pokemon(poke.name, poke.sprites.front_default, false)
+      );
+      setPokemonList(newList); // just once
+    } catch (err) {
+      console.error(err);
     }
+  }
+
+  useEffect(() => {
     fetchPokeList();
   }, [setPokemonList]);
 
@@ -50,7 +58,9 @@ function FetchPokemon({ pokemonList, setPokemonList, score, setScore }) {
       if (p.name === pokeName) {
         console.log(`🔥 ${p.name} was clicked! clicked=${p.clicked}`);
         if (p.clicked) {
+          if (score > highscore) setHighscore(score);
           setScore(0);
+          fetchPokeList();
           return p; // don't modify again
         }
 
@@ -67,7 +77,12 @@ function FetchPokemon({ pokemonList, setPokemonList, score, setScore }) {
 
   return (
     <>
-      <div>{score}</div>
+      <div id="title">PokeMem</div>
+      <div className="scores">
+        <div id="score">Score: {score}</div>
+        <div id="highscore">Highscore: {highscore}</div>
+      </div>
+
       <div className="pokemon">
         {pokemonList.map((pokemon, index) => (
           <button
@@ -78,6 +93,11 @@ function FetchPokemon({ pokemonList, setPokemonList, score, setScore }) {
             <img src={pokemon.img} alt={pokemon.name} />
           </button>
         ))}
+      </div>
+
+      <div id="instructions">
+        How to Play: Select as many pokemon in a row as possible without
+        selecting the same one. The max Score is 20.
       </div>
     </>
   );
